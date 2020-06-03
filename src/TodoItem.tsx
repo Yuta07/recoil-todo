@@ -2,12 +2,22 @@ import React from "react";
 import { useRecoilState } from "recoil";
 import { todoListState } from "./TodoList";
 
-export const TodoItem = ({ item }: any) => {
-  const [todoList, setTodoList] = useRecoilState<any>(todoListState);
-  const index = todoList.findIndex((listItem: any) => listItem === item);
+type Props = {
+  id: number;
+  text: string;
+  isComplete: boolean;
+};
+
+type ItemProps = {
+  item: Props;
+};
+
+export const TodoItem = ({ item }: ItemProps) => {
+  const [todoList, setTodoList] = useRecoilState(todoListState);
+  const index = todoList.findIndex((listItem: Props) => listItem === item);
 
   const editItemText = ({ target: { value } }: any) => {
-    const newList = replaceItemAtIndex(todoList, index, {
+    const newList: any = replaceItemAtIndex(todoList, index, {
       ...item,
       text: value
     });
@@ -16,7 +26,7 @@ export const TodoItem = ({ item }: any) => {
   };
 
   const toggleItemCompletion = () => {
-    const newList = replaceItemAtIndex(todoList, index, {
+    const newList: any = replaceItemAtIndex(todoList, index, {
       ...item,
       isComplete: !item.isComplete
     });
@@ -25,12 +35,10 @@ export const TodoItem = ({ item }: any) => {
   };
 
   const deleteItem = () => {
-    const newList = removeItemAtIndex(todoList, index);
+    const newList: any = removeItemAtIndex(todoList, index);
 
     setTodoList(newList);
   };
-
-  console.log(item);
 
   return (
     <div>
@@ -45,10 +53,14 @@ export const TodoItem = ({ item }: any) => {
   );
 };
 
-function replaceItemAtIndex(arr: any, index: number, newValue: any) {
+function replaceItemAtIndex(
+  arr: Props[],
+  index: number,
+  newValue: Props
+): Props[] {
   return [...arr.slice(0, index), newValue, ...arr.slice(index + 1)];
 }
 
-function removeItemAtIndex(arr: any, index: number) {
+function removeItemAtIndex(arr: Props[], index: number): Props[] {
   return [...arr.slice(0, index), ...arr.slice(index + 1)];
 }

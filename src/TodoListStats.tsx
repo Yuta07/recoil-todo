@@ -1,14 +1,28 @@
 import React from "react";
-import { selector, useRecoilValue } from "recoil";
+import { selector, useRecoilValue, RecoilValueReadOnly } from "recoil";
 import { todoListState } from "./TodoList";
 
-export const todoListStatsState = selector({
+type Props = {
+  totalNum: number;
+  totalCompletedNum: number;
+  totalUncompletedNum: number;
+  percentCompleted: number;
+};
+
+type TodoListProps = {
+  id: number;
+  text: string;
+  isComplete: boolean;
+};
+
+export const todoListStatsState: RecoilValueReadOnly<Props> = selector({
   key: "todoListStatsState",
   get: ({ get }) => {
     const todoList = get(todoListState);
     const totalNum = todoList.length;
-    const totalCompletedNum = todoList.filter((item: any) => item.isComplete)
-      .length;
+    const totalCompletedNum = todoList.filter(
+      (item: TodoListProps) => item.isComplete
+    ).length;
     const totalUncompletedNum = totalNum - totalCompletedNum;
     const percentCompleted = totalNum === 0 ? 0 : totalCompletedNum / totalNum;
 
@@ -27,7 +41,7 @@ export const TodoListStats = () => {
     totalCompletedNum,
     totalUncompletedNum,
     percentCompleted
-  } = useRecoilValue(todoListStatsState);
+  } = useRecoilValue<Props>(todoListStatsState);
 
   const formattedPercentCompleted = Math.round(percentCompleted * 100);
 

@@ -1,18 +1,24 @@
 import React from "react";
-import { atom, useRecoilState, useSetRecoilState } from "recoil";
+import {
+  atom,
+  useRecoilState,
+  useSetRecoilState,
+  RecoilState,
+  SetterOrUpdater
+} from "recoil";
 import { todoListState } from "./TodoList";
 
-const value = atom({
+const value: RecoilState<string> = atom({
   key: "input",
   default: ""
 });
 
 export const TodoItemCreator = () => {
   const [inputValue, setInputValue] = useRecoilState<string>(value);
-  const setTodoList = useSetRecoilState<any>(todoListState);
+  const setTodoList: SetterOrUpdater<any> = useSetRecoilState(todoListState);
 
   const addItem = () => {
-    setTodoList((oldTodoList: any) => [
+    setTodoList((oldTodoList: never[]) => [
       ...oldTodoList,
       {
         id: getId(),

@@ -1,23 +1,35 @@
 import React from "react";
-import { atom, selector, useRecoilState } from "recoil";
+import {
+  atom,
+  selector,
+  useRecoilState,
+  RecoilState,
+  RecoilValueReadOnly
+} from "recoil";
 import { todoListState } from "./TodoList";
 
-export const todoListFilterState = atom({
+type Props = {
+  id: number;
+  text: string;
+  isComplete: boolean;
+};
+
+export const todoListFilterState: RecoilState<string> = atom({
   key: "todoListFilterState",
   default: "Show All"
 });
 
-export const filteredTodoListState = selector({
+export const filteredTodoListState: RecoilValueReadOnly<never[]> = selector({
   key: "filteredTodoListState",
   get: ({ get }) => {
-    const filter = get(todoListFilterState);
-    const list = get(todoListState);
+    const filter: string = get(todoListFilterState);
+    const list: never[] = get(todoListState);
 
     switch (filter) {
       case "Show Completed":
-        return list.filter((item: any) => item.isComplete);
+        return list.filter((item: Props) => item.isComplete);
       case "Show Uncompleted":
-        return list.filter((item: any) => !item.isComplete);
+        return list.filter((item: Props) => !item.isComplete);
       default:
         return list;
     }
@@ -25,7 +37,7 @@ export const filteredTodoListState = selector({
 });
 
 export const TodoListFilters = () => {
-  const [filter, setFilter] = useRecoilState(todoListFilterState);
+  const [filter, setFilter] = useRecoilState<string>(todoListFilterState);
 
   const updateFilter = ({ target: { value } }: any) => {
     setFilter(value);
